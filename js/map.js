@@ -22,7 +22,7 @@ export function initMap() {
       + 'Flèche : sens du vent (km/h)<br>'
       + 'Cercle bleu : pluie <b>prévue</b>'
       + '<div class="radar-info">'
-      +   '<i class="radar-scale"></i>Zones bleues à jaunes : pluie <b>observée</b> en ce moment (radar), du faible au fort'
+      +   '<i class="radar-scale"></i>Zones bleues à jaunes : pluie <b>observée</b> en ce moment, du faible au fort'
       + '</div>';
     return div;
   };

@@ -3,7 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Vélotaf : faut-il y aller ?</title>
+  <title>VéloScore : faut-il y aller ?</title>
+<link rel="icon" type="image/svg+xml" href="img/logo.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="img/favicon-32.png">
+<link rel="apple-touch-icon" href="img/apple-touch-icon.png">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css">
   <link rel="stylesheet" href="css/style.css">
 </head>
@@ -12,7 +15,8 @@
 
     <!-- Haut gauche : trajet, jour et horaires -->
     <section id="form-cell" class="card">
-      <h1>🚴 Vélotaf</h1>
+      <h1><img class="logo" src="img/logo.svg" alt="" width="36" height="36"> VéloScore</h1>
+      <p class="tagline">L'indice météo pour vos trajets vélo quotidiens</p>
       <form id="trip-form" autocomplete="off">
         <div class="field">
           <label for="from">Départ</label>
@@ -24,7 +28,10 @@
         </div>
         <div class="field">
           <label for="to">Arrivée</label>
-          <input id="to" type="text" list="to-list" placeholder="Ex : 5 avenue Anatole France, Paris" required>
+          <div class="input-row">
+            <input id="to" type="text" list="to-list" placeholder="Ex : 5 avenue Anatole France, Paris" required>
+            <button type="button" id="swap" class="icon-btn" title="Inverser départ et arrivée" aria-label="Inverser départ et arrivée">⇅</button>
+          </div>
           <datalist id="to-list"></datalist>
         </div>
         <div class="times">
@@ -65,7 +72,7 @@
             <option value="back">Retour</option>
           </select>
         </div>
-        <label class="check"><input id="radar-toggle" type="checkbox" checked> Radar<span class="long"> de pluie</span></label>
+        <label class="check"><input id="radar-toggle" type="checkbox" checked> <span>Radar<span class="long"> de pluie</span></span></label>
         <label class="check"><input id="legend-toggle" type="checkbox" checked> Légende</label>
         <button type="button" id="fullscreen-btn" class="ghost-btn" title="Plein écran" aria-pressed="false">
           <span id="fs-icon">⛶</span><span id="fs-label" class="btn-label">Plein écran</span>

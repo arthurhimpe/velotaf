@@ -59,6 +59,7 @@ function setupAddressField(input, datalist) {
   return {
     get: () => place,
     set: (p) => { place = p; known.set(p.label, p); input.value = p.label; },
+    setText: (t) => { place = null; input.value = t; },   // texte tapé mais pas encore choisi dans la liste
   };
 }
 
@@ -272,6 +273,16 @@ function submitTrip(showMissing) {
 }
 
 $('trip-form').addEventListener('submit', (e) => { e.preventDefault(); submitTrip(true); });
+
+// Inverser départ et arrivée (le jour et les heures restent inchangés)
+$('swap').addEventListener('click', () => {
+  const a = { place: fromField.get(), text: $('from').value };
+  const b = { place: toField.get(), text: $('to').value };
+  for (const [field, v] of [[fromField, b], [toField, a]]) {
+    if (v.place) field.set(v.place); else field.setText(v.text);
+  }
+  submitTrip(false);   // recalcule tout de suite si les deux adresses sont valides
+});
 
 // Changer le jour ou une heure relance le calcul directement
 ['day', 'out-time', 'back-time'].forEach((id) => $(id).addEventListener('change', () => submitTrip(false)));
