@@ -1,0 +1,178 @@
+:root {
+  --bg: #f1f4f8; --card: #ffffff; --text: #1d2733; --muted: #66727f;
+  --primary: #1d6fd6; --primary-dark: #1859ad; --border: #d5dce4; --radius: 14px;
+}
+* { box-sizing: border-box; }
+body { margin: 0; font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  background: var(--bg); color: var(--text); }
+body.no-scroll { overflow: hidden; }          /* bloque le défilement en plein écran */
+input, select, button { font-family: inherit; }   /* une seule police partout */
+
+/* --- Mise en page : une colonne par défaut (mobile) --- */
+#layout {
+  max-width: 1500px; margin: 0 auto; padding: 16px;
+  display: grid; gap: 16px;
+  grid-template-columns: 1fr;
+  grid-template-areas: "form" "result" "map";
+}
+#form-cell   { grid-area: form; }
+#result-cell { grid-area: result; }
+#map-cell    { grid-area: map; }
+
+/* --- PC : formulaire + résultat en haut, carte pleine largeur en bas --- */
+@media (min-width: 900px) {
+  #layout {
+    grid-template-columns: minmax(380px, 1fr) 1.5fr;
+    grid-template-rows: auto minmax(380px, 1fr);   /* la carte prend toute la hauteur restante */
+    grid-template-areas: "form result" "map map";
+    min-height: 100vh;
+  }
+}
+
+.card { background: var(--card); border-radius: var(--radius); padding: 18px;
+  box-shadow: 0 1px 3px rgba(20, 40, 60, .08), 0 4px 16px rgba(20, 40, 60, .04); min-width: 0; }
+h1 { margin: 0 0 14px; font-size: 24px; text-align: center; }
+h2 { margin: 0 0 8px; font-size: 17px; }
+
+/* --- Formulaire --- */
+form { display: grid; gap: 12px; }
+.field { display: grid; gap: 4px; }
+.field > label { font-size: 13px; font-weight: 600; color: var(--muted); }
+.input-row { display: flex; gap: 8px; }
+.input-row input { flex: 1; min-width: 0; }
+.times { display: grid; grid-template-columns: 1.4fr 1fr 1fr; gap: 12px; }
+input, select { font-size: 15px; padding: 10px 12px; border: 1px solid var(--border);
+  border-radius: 10px; background: #fff; color: var(--text); min-width: 0; }
+input:focus-visible, select:focus-visible { outline: 2px solid var(--primary); outline-offset: 1px; }
+button { font-size: 15px; font-weight: 600; padding: 12px; border: 0; border-radius: 10px;
+  background: var(--primary); color: #fff; cursor: pointer; transition: background .15s; }
+button:hover { background: var(--primary-dark); }
+.icon-btn { padding: 0 14px; background: #e8eef5; color: var(--text); font-size: 18px; }
+.icon-btn:hover { background: #d6e0ec; }
+.icon-btn:disabled { opacity: .5; cursor: wait; }
+.ghost-btn { margin-left: auto; padding: 8px 12px; font-size: 14px; background: #e8eef5; color: var(--text); }
+.ghost-btn:hover { background: #d6e0ec; }
+.btn-label { margin-left: 6px; }
+.details-btn { display: none; }               /* affiché uniquement sur téléphone */
+#error, #map-error { color: #b00020; margin: 12px 0 0; }
+
+/* --- Résultat : jauge + détail --- */
+#result-cell { display: flex; flex-direction: column; justify-content: center; gap: 16px; }
+#score-block { flex: 0 0 auto; text-align: center; }
+#details-block { flex: 1; min-width: 0; }
+
+#gauge {
+  --p: 0;                                   /* progression 0-100, mise à jour par main.js */
+  position: relative; width: 150px; height: 150px; margin: 0 auto; border-radius: 50%;
+  background: conic-gradient(var(--c, #c9d1d9) calc(var(--p) * 1%), #e8ecf0 0);
+  display: flex; align-items: center; justify-content: center;
+}
+#gauge::before { content: ''; position: absolute; inset: 12px; border-radius: 50%; background: var(--card); }
+#score, #gauge small { position: relative; }
+#score { font-size: 44px; font-weight: 700; color: var(--c, #9aa5b1); }
+#gauge small { color: var(--muted); margin-left: 2px; }
+#verdict { font-size: 20px; font-weight: 700; margin: 10px 0 2px; color: var(--c, var(--text)); }
+#day-note { margin: 0; font-size: 13px; color: var(--muted); }
+#day-note::first-letter { text-transform: uppercase; }
+
+#details { list-style: none; padding: 0; margin: 0 0 8px; display: grid; gap: 8px; }
+.muted { color: var(--muted); }
+.leg { background: #f4f7fa; border-radius: 12px; padding: 10px 12px; }
+.leg-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+.badge { color: #fff; font-weight: 700; padding: 2px 12px; border-radius: 999px; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chips span { background: #fff; border: 1px solid var(--border); border-radius: 999px;
+  padding: 2px 10px; font-size: 12.5px; }
+#route-info { margin: 0; font-weight: 600; color: var(--muted); }
+
+/* PC large : jauge à gauche, détail à droite */
+@media (min-width: 1000px) {
+  #result-cell { flex-direction: row; align-items: center; gap: 24px; }
+  #score-block { flex: 0 0 210px; }
+}
+
+/* --- Carte --- */
+#map-cell { display: flex; flex-direction: column; gap: 10px; overflow: hidden; }
+.map-controls { display: flex; flex-wrap: wrap; gap: 8px 20px; align-items: end; }
+.check { display: flex; align-items: center; gap: 6px; padding-bottom: 10px; font-size: 14px; font-weight: 600; }
+#map { flex: 1; min-height: 340px; border-radius: 10px; z-index: 0; }
+.wind-icon { display: flex; flex-direction: column; align-items: center; justify-content: center;
+  background: rgba(255,255,255,.92); border-radius: 50%; box-shadow: 0 1px 3px rgba(0,0,0,.4);
+  font-size: 11px; line-height: 1; }
+.wind-arrow { display: inline-block; font-size: 16px; }
+.map-legend { background: rgba(255,255,255,.92); padding: 8px 10px; border-radius: 8px;
+  font-size: 12px; line-height: 1.6; box-shadow: 0 1px 4px rgba(0,0,0,.25); }
+.map-legend i { display: inline-block; width: 18px; height: 4px; border-radius: 2px;
+  margin-right: 6px; vertical-align: middle; }
+.map-legend .radar-info { margin-top: 6px; padding-top: 6px; border-top: 1px solid #d5dce4; max-width: 260px; }
+.map-legend i.radar-scale { background: linear-gradient(90deg, #9ad0f5, #2b7bd6, #f5d800, #e8590c); }
+#map.radar-off .radar-info { display: none; }   /* explication du radar masquée quand il est désactivé */
+#map.legend-hidden .map-legend { display: none; }   /* légende masquée */
+
+/* --- Carte en plein écran --- */
+#map-cell.map-full { position: fixed; inset: 0; z-index: 2000; border-radius: 0; padding: 12px; }
+#map-cell.map-full #map { min-height: 0; }
+
+/* --- Téléphone : compact --- */
+@media (max-width: 600px) {
+  #layout { padding: 10px; gap: 10px; }
+  .card { padding: 12px; border-radius: 12px; }
+  h1 { font-size: 18px; margin-bottom: 8px; text-align: center; }
+  h2 { font-size: 14px; margin-bottom: 6px; }
+
+  /* Formulaire */
+  form { gap: 8px; }
+  .field > label { font-size: 11px; }
+  input, select { font-size: 14px; padding: 7px 8px; border-radius: 8px; }
+  button { padding: 9px; font-size: 14px; }
+  .icon-btn { padding: 0 11px; font-size: 16px; }
+  .times { grid-template-columns: 1.5fr 1fr 1fr; gap: 6px; }   /* Jour, Aller, Retour sur une ligne */
+
+  /* Score : jauge + verdict, le tout centré */
+  #result-cell { gap: 8px; }
+  #score-block { display: grid; grid-template-columns: 90px auto; grid-template-rows: 1fr 1fr;
+    column-gap: 14px; justify-content: center; align-items: center; text-align: left; }
+  #gauge { grid-row: 1 / 3; width: 90px; height: 90px; margin: 0; }
+  #gauge::before { inset: 9px; }
+  #score { font-size: 28px; }
+  #gauge small { font-size: 10px; }
+  #verdict { align-self: end; margin: 0; font-size: 17px; }
+  #day-note { align-self: start; font-size: 12px; }
+
+  /* Détail : caché par défaut, déplié par le bouton */
+  .details-btn { display: block; width: 100%; padding: 7px; font-size: 13px;
+    background: #e8eef5; color: var(--text); }
+  .details-btn:hover { background: #d6e0ec; }
+  #details-block { display: none; }
+  #result-cell.details-open #details-block { display: block; }
+
+  #details { gap: 6px; margin-bottom: 6px; }
+  .leg { padding: 8px 10px; }
+  .leg-head { margin-bottom: 4px; font-size: 13px; }
+  .badge { padding: 1px 10px; font-size: 13px; }
+  .chips { gap: 4px; }
+  .chips span { font-size: 11.5px; padding: 1px 8px; }
+  #route-info { font-size: 12px; }
+
+  /* Contrôles de la carte : une seule ligne */
+  .map-controls { flex-wrap: nowrap; gap: 8px; align-items: center; }
+  .map-controls .field > label {            /* libellé masqué visuellement, lu par les lecteurs d'écran */
+    position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  .map-controls select { padding: 6px 8px; font-size: 14px; }
+  .check { padding-bottom: 0; font-size: 13px; gap: 4px; white-space: nowrap; }
+  .check .long { display: none; }           /* "Radar de pluie" → "Radar" */
+  .ghost-btn { padding: 6px 10px; font-size: 14px; }
+  .btn-label { display: none; }             /* bouton plein écran réduit à son icône */
+
+  #map { min-height: 280px; }
+  .map-legend { font-size: 11px; padding: 6px 8px; line-height: 1.5; }
+  #map-cell.map-full { padding: 8px; }
+}
+
+/* iPhone (Safari) zoome automatiquement dans les champs dont le texte fait moins de 16 px :
+   on garde donc 16 px uniquement sur iOS */
+@supports (-webkit-touch-callout: none) {
+  @media (max-width: 600px) {
+    input, select { font-size: 16px; }
+  }
+}

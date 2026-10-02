@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Vélotaf : faut-il y aller ?</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <main id="layout">
+
+    <!-- Haut gauche : trajet, jour et horaires -->
+    <section id="form-cell" class="card">
+      <h1>🚴 Vélotaf</h1>
+      <form id="trip-form" autocomplete="off">
+        <div class="field">
+          <label for="from">Départ</label>
+          <div class="input-row">
+            <input id="from" type="text" list="from-list" placeholder="Ex : 10 rue de Rivoli, Paris" required>
+            <button type="button" id="locate" class="icon-btn" title="Utiliser ma position actuelle" aria-label="Utiliser ma position actuelle">📍</button>
+          </div>
+          <datalist id="from-list"></datalist>
+        </div>
+        <div class="field">
+          <label for="to">Arrivée</label>
+          <input id="to" type="text" list="to-list" placeholder="Ex : 5 avenue Anatole France, Paris" required>
+          <datalist id="to-list"></datalist>
+        </div>
+        <div class="times">
+          <div class="field"><label for="day">Jour</label><input id="day" type="date" required></div>
+          <div class="field"><label for="out-time">Aller</label><input id="out-time" type="time" value="08:00" required></div>
+          <div class="field"><label for="back-time">Retour</label><input id="back-time" type="time" value="17:30" required></div>
+        </div>
+        <button type="submit">Calculer le score</button>
+      </form>
+      <p id="error" hidden></p>
+    </section>
+
+    <!-- Haut droite : score et détail du trajet -->
+    <section id="result-cell" class="card">
+      <div id="score-block">
+        <div id="gauge"><span id="score">--</span><small>/100</small></div>
+        <p id="verdict">Renseigne ton trajet</p>
+        <p id="day-note"></p>
+      </div>
+
+      <!-- Visible uniquement sur téléphone -->
+      <button type="button" id="details-toggle" class="details-btn" aria-expanded="false" aria-controls="details-block">Voir les détails ▾</button>
+
+      <div id="details-block">
+        <h2>Détail du trajet</h2>
+        <ul id="details"><li class="muted">L'aller et le retour s'afficheront ici.</li></ul>
+        <p id="route-info"></p>
+      </div>
+    </section>
+
+    <!-- Bas : carte pleine largeur -->
+    <section id="map-cell" class="card">
+      <div class="map-controls">
+        <div class="field">
+          <label for="map-leg">Trajet affiché</label>
+          <select id="map-leg">
+            <option value="out">Aller</option>
+            <option value="back">Retour</option>
+          </select>
+        </div>
+        <label class="check"><input id="radar-toggle" type="checkbox" checked> Radar<span class="long"> de pluie</span></label>
+        <label class="check"><input id="legend-toggle" type="checkbox" checked> Légende</label>
+        <button type="button" id="fullscreen-btn" class="ghost-btn" title="Plein écran" aria-pressed="false">
+          <span id="fs-icon">⛶</span><span id="fs-label" class="btn-label">Plein écran</span>
+        </button>
+      </div>
+      <div id="map"></div>
+      <p id="map-error" hidden></p>
+    </section>
+
+  </main>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>
